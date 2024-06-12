@@ -1,0 +1,64 @@
+classDiagram
+    class FJEBuilder {
+        -factory: StyleFactory
+        +build_root(data: Any, level: int): TreeNode
+        +build_child(name: str, value: Any, level: int): TreeNode
+    }
+    class FJE {
+        -filepath: str
+        -factory: StyleFactory
+        -root: TreeNode
+        +_load(): void
+        +show(): void
+    }
+    class IconFamily {
+        -composite_icon: str
+        -leaf_icon: str
+    }
+    class TreeNode {
+        -iconFamily: IconFamily
+        +draw(flag: bool, level: int, prefix: str): void
+    }
+    class ContainerNode {
+        -name: str
+        -level: int
+        -children: list<TreeNode>
+        +Add_ChildNode(child: TreeNode): void
+        +draw(flag: bool, level: int, prefix: str): void
+    }
+    class RectangleContainer {
+        +draw(flag: bool, level: int, prefix: str): void
+    }
+    class LeafNode {
+        -name: str
+        -value: Any
+        +draw(flag: bool, level: int, prefix: str): void
+    }
+    class RectangleLeaf {
+        +draw(flag: bool, level: int, prefix: str): void
+    }
+    class StyleFactory {
+        -iconFamily: IconFamily
+        +build_Container(name: str, level: int): ContainerNode
+        +build_leaf(name: str, value: Any): LeafNode
+    }
+    class TreeStyleFactory {
+        +build_Container(name: str, level: int): ContainerNode
+        +build_leaf(name: str, value: Any): LeafNode
+    }
+    class RectangleStyleFactory {
+        +build_Container(name: str, level: int): RectangleContainer
+        +build_leaf(name: str, value: Any): RectangleLeaf
+    }
+
+    FJEBuilder --> StyleFactory: factory
+    FJE --> StyleFactory: factory
+    FJE --> TreeNode: root
+    IconFamily --> TreeNode: iconFamily
+    TreeNode <|-- ContainerNode
+    TreeNode <|-- LeafNode
+    ContainerNode --> TreeNode: children
+    ContainerNode <|-- RectangleContainer
+    LeafNode <|-- RectangleLeaf
+    StyleFactory <|-- TreeStyleFactory
+    StyleFactory <|-- RectangleStyleFactory
